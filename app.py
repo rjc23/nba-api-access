@@ -4,9 +4,19 @@ import pandas as pd
 
 app = Flask(__name__)
 
+headers = {
+    'Host': 'stats.nba.com',
+    'User-Agent': 'PostmanRuntime/7.35.0',
+    'Accept': 'application/json, text/plain, */*',
+    'Accept-Language': 'en-US,en;q=0.5',
+    'Referer': 'https://stats.nba.com/',
+    'Accept-Encoding': 'gzip, deflate, br',
+    'Connection': 'keep-alive',
+}
+
 def find_last_scorer(game_id):
     # Fetch play-by-play data for the specified game
-    play_by_play = playbyplayv2.PlayByPlayV2(game_id=game_id)
+    play_by_play = playbyplayv2.PlayByPlayV2(game_id=game_id, headers=headers)
     
     # Convert the data to a DataFrame
     play_by_play_df = play_by_play.get_data_frames()[0]
@@ -28,7 +38,7 @@ def get_coaches(team_id):
     return team_roster_df
 
 def get_game_teams(game_id):
-    game_summary = boxscoresummaryv2.BoxScoreSummaryV2(game_id=game_id)
+    game_summary = boxscoresummaryv2.BoxScoreSummaryV2(game_id=game_id, headers=headers)
     game_summary_df = game_summary.get_data_frames()[0]
     return game_summary_df['HOME_TEAM_ID'].iloc[0], game_summary_df['VISITOR_TEAM_ID'].iloc[0]
 
@@ -52,7 +62,7 @@ def get_game_teams_info():
         return jsonify({"error": "Missing game_id parameter"}), 400
 
     try:
-        game_summary = boxscoresummaryv2.BoxScoreSummaryV2(game_id=game_id)
+        game_summary = boxscoresummaryv2.BoxScoreSummaryV2(game_id=game_id, headers=headers)
         game_summary_df = game_summary.get_data_frames()[0]
         home_team_id = game_summary_df['HOME_TEAM_ID'].iloc[0]
         visitor_team_id = game_summary_df['VISITOR_TEAM_ID'].iloc[0]
