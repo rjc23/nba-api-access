@@ -41,6 +41,10 @@ def get_team_details(team_id):
         "team_abbreviation": team_info_df['TEAM_ABBREVIATION'].iloc[0]
     }
 
+@app.route('/')
+def index():
+    return "Hello, World!"
+
 @app.route('/getgameteams', methods=['GET'])
 def get_game_teams_info():
     game_id = request.args.get('game_id')
